@@ -1,5 +1,10 @@
 export function analyzeAll(crawlResult: Course[]) {
-  return crawlResult.map(analyzeCourse);
+  return crawlResult.map((course) => {
+    return {
+      title: course.course.title,
+      ...analyzeCourse(course),
+    };
+  });
 }
 
 function analyzeCourse(course: Course) {
@@ -7,7 +12,7 @@ function analyzeCourse(course: Course) {
   const submissions = problems
     .flatMap((p) => p.submissions)
     .filter((s) => s != undefined);
-  const languageRecord = submissions.reduce((acc, s) => {
+  let languageRecord = submissions.reduce((acc, s) => {
     if (acc[s.language]) {
       acc[s.language]++;
     } else {
@@ -15,6 +20,9 @@ function analyzeCourse(course: Course) {
     }
     return acc;
   }, {} as Record<string, number>);
+  languageRecord = Object.fromEntries(
+    Object.entries(languageRecord).sort((a, b) => b[1] - a[1])
+  );
   const submissionCount = submissions.length;
   const submissionACCount = submissions.filter(
     (s) => s.result === "Accepted"
@@ -39,13 +47,11 @@ function analyzeCourse(course: Course) {
     .map((s) => {
       const time = s.time;
       const sortingHour = (time.getHours() - 5 + 24) % 24;
-      
+
       return {
         submission: s,
         sortingTime:
-          sortingHour * 60 * 60 +
-          time.getMinutes() * 60 +
-          time.getSeconds(),
+          sortingHour * 60 * 60 + time.getMinutes() * 60 + time.getSeconds(),
       };
     })
     .sort((a, b) => b.sortingTime - a.sortingTime)[0].submission;
