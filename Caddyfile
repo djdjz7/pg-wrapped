@@ -1,0 +1,7 @@
+:2015 {
+	root * ./dist
+	handle_path /gen/* {
+		reverse_proxy localhost:3000
+	}
+	file_server
+}
