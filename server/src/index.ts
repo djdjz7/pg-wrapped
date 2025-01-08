@@ -1,12 +1,8 @@
 import { Elysia, t } from "elysia";
-import { swagger } from "@elysiajs/swagger";
 import { crawl } from "./crawler";
 import { analyzeAll } from "./analyzer";
 
-let cookie = "";
-
 const app = new Elysia()
-  .use(swagger())
   .post(
     "/",
     async ({ body: { account, password } }) => {
@@ -18,7 +14,7 @@ const app = new Elysia()
         account: t.String(),
         password: t.String(),
       }),
-    }
+    },
   )
   .listen(3000);
 
