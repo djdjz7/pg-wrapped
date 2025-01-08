@@ -6,9 +6,16 @@
     "dev": "bun run --watch src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "@elysiajs/swagger": "^1.2.0",
+    "axios": "^1.7.9",
+    "axios-cookiejar-support": "^5.0.5",
+    "cheerio": "^1.0.0",
+    "elysia": "latest",
+    "set-cookie-parser": "^2.7.1",
+    "tough-cookie": "^5.0.0"
   },
   "devDependencies": {
+    "@types/set-cookie-parser": "^2.4.10",
     "bun-types": "latest"
   },
   "module": "src/index.js"
