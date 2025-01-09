@@ -5,6 +5,7 @@ import ProblemCard from './components/ProblemCard.vue';
 import SubmissionCard from './components/SubmissionCard.vue';
 import { ChevronDownIcon } from '@heroicons/vue/24/outline';
 import { type Course } from './data';
+import GithubMark from './assets/github-mark.svg';
 
 const loggedIn = ref(false);
 const loading = ref(false);
@@ -15,6 +16,9 @@ const account = ref('');
 const password = ref('');
 
 async function query() {
+  if (!account.value || !password.value) {
+    return;
+  }
   loading.value = true;
   try {
     const response = await fetch("/gen/", {
@@ -44,12 +48,14 @@ async function query() {
       <h1 self-center m-0>编程网格 2024 年度总结</h1>
       <input m-t-4 v-model="account" placeholder="账号" w-full p-y-2 p-x-2 max-w-80 mx-auto rounded-lg
         ring="2 offset-2 transparent focus:gray hover:gray" outline-none border="1 solid gray" transition-all
-        duration-150 />
+        duration-150 @keypress.enter="query()" />
       <input v-model="password" placeholder="密码" type="password" m-t-1 w-full p-y-2 p-x-2 max-w-80 mx-auto rounded-lg
         ring="2 offset-2 transparent focus:gray hover:gray" outline-none border="1 solid gray" transition-all
-        duration-150 />
+        duration-150 @keypress.enter="query()" />
       <button m-t-2 w-full p-y-2 p-x-2 max-w-80 mx-auto rounded-lg ring="2 offset-2 transparent focus:gray"
         transition-all duration-150 border-none @click="query()" :disabled="!account && !password">看看我的！</button>
+      <a href="https://github.com/djdjz7/pg-wrapped" target="_blank" m-t-4 self-center decoration-none><img
+          :src="GithubMark" alt="Github Repo" w-6></a>
     </div>
   </div>
   <div v-else :key="course.title">
@@ -170,6 +176,8 @@ async function query() {
       <div section flex-items-center flex-justify-center text-center>
         <span emphasis>本学期的代码就写到这里吧</span>
         <span>下个学期也要继续努力哦</span>
+        <a href="https://github.com/djdjz7/pg-wrapped" target="_blank" m-t-8 text-sm color-unset
+          flex="~ items-center"><img :src="GithubMark" alt="Github Repo" w-6 m-r-2>Star this on Github.</a>
       </div>
     </div>
   </div>
