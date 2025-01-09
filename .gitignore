@@ -15,6 +15,7 @@
 # production
 /build
 /dist/
+server-bundle
 
 # misc
 .DS_Store
