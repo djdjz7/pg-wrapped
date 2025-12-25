@@ -4,6 +4,9 @@
   "workspaces": {
     "": {
       "name": "pg-wrapped",
+      "dependencies": {
+        "elysia": "latest",
+      },
       "devDependencies": {
         "concurrently": "^9.2.1",
       },
@@ -12,6 +15,7 @@
       "name": "client",
       "version": "0.0.0",
       "dependencies": {
+        "@elysiajs/eden": "^1.4.6",
         "@heroicons/vue": "^2.2.0",
         "vue": "^3.5.13",
       },
@@ -43,7 +47,6 @@
         "axios": "^1.7.9",
         "axios-cookiejar-support": "^5.0.5",
         "cheerio": "^1.0.0",
-        "elysia": "latest",
         "set-cookie-parser": "^2.7.1",
         "tough-cookie": "^5.0.0",
       },
@@ -121,6 +124,8 @@
     "@babel/types": ["@babel/types@7.28.5", "https://registry.npmmirror.com/@babel/types/-/types-7.28.5.tgz", { "dependencies": { "@babel/helper-string-parser": "^7.27.1", "@babel/helper-validator-identifier": "^7.28.5" } }, "sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA=="],
 
     "@borewit/text-codec": ["@borewit/text-codec@0.1.1", "https://registry.npmmirror.com/@borewit/text-codec/-/text-codec-0.1.1.tgz", {}, "sha512-5L/uBxmjaCIX5h8Z+uu+kA9BQLkc/Wl06UGR5ajNRxu+/XjonB5i8JpgFMrPj3LXTCPA0pv8yxUvbUi+QthGGA=="],
+
+    "@elysiajs/eden": ["@elysiajs/eden@1.4.6", "https://registry.npmmirror.com/@elysiajs/eden/-/eden-1.4.6.tgz", { "peerDependencies": { "elysia": ">=1.4.19" } }, "sha512-Tsa4NwXEWg/u73vWiYZQ3L5/ecgZSxqiEjYwpS+4qBKXeTZqZKl2hcgHJSVBL+InEDMi35Xugct7qyAXE5oM4Q=="],
 
     "@elysiajs/swagger": ["@elysiajs/swagger@1.3.1", "https://registry.npmmirror.com/@elysiajs/swagger/-/swagger-1.3.1.tgz", { "dependencies": { "@scalar/themes": "^0.9.52", "@scalar/types": "^0.0.12", "openapi-types": "^12.1.3", "pathe": "^1.1.2" }, "peerDependencies": { "elysia": ">= 1.3.0" } }, "sha512-LcbLHa0zE6FJKWPWKsIC/f+62wbDv3aXydqcNPVPyqNcaUgwvCajIi+5kHEU6GO3oXUCpzKaMsb3gsjt8sLzFQ=="],
 

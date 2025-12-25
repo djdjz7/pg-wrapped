@@ -6,14 +6,19 @@ import SubmissionCard from './components/SubmissionCard.vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { type Course } from './data'
 import GithubMark from './assets/github-mark.svg'
+import { type App } from '../../server/src/index'
+import { treaty } from '@elysiajs/eden'
 
-const loggedIn = ref(false)
-const loading = ref(false)
+const serverLocation = new URL('/gen/', window.location.href)
+const app = treaty<App>(serverLocation.href)
+
+const state = ref<'login' | 'loading' | 'error' | 'report'>('login')
 const index = ref(0)
 const courses = ref<Course[]>([])
 const course = computed(() => courses.value[index.value])
 const account = ref('')
 const password = ref('')
+const errorMessage = ref<string>()
 
 function getReportYear() {
   const now = new Date()
@@ -28,35 +33,39 @@ async function query() {
   if (!account.value || !password.value) {
     return
   }
-  loading.value = true
+  state.value = 'loading'
   try {
-    const response = await fetch('/gen/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ account: account.value, password: password.value, year: year.value }),
+    const response = await app.post({
+      account: account.value,
+      password: password.value,
+      year: year.value,
     })
-    const responseText = await response.text()
-    courses.value = JSON.parse(responseText)
-    loggedIn.value = true
-    loading.value = false
+    if (response.error) {
+      switch (response.error.status) {
+        case 418:
+          throw new Error(response.error.value.message)
+        case 422:
+          throw new Error(response.error.value.message || '表单验证失败')
+        default:
+          throw new Error('未知错误')
+      }
+    }
+    courses.value = response.data
+    state.value = 'report'
   } catch (e) {
-    alert(e)
-    console.error(e)
+    errorMessage.value = (e as Error).message
+    state.value = 'error'
   }
-  loading.value = false
+}
+
+function reload() {
+  window.location.reload()
 }
 </script>
 
 <template>
-  <div id="login-stuff" v-if="!loggedIn">
+  <div id="login-stuff" v-if="state === 'login'">
     <div section flex-justify-center>
-      <span
-        v-if="loading"
-        class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-xl"
-        >你先别急，先让我看...</span
-      >
       <h1 self-center m-0>
         编程网格
         <input
@@ -134,7 +143,14 @@ async function query() {
       /></a>
     </div>
   </div>
-  <div v-else :key="course.title">
+  <div v-else-if="state === 'loading'">
+    <div
+      class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-xl"
+    >
+      你先别急，先让我看...
+    </div>
+  </div>
+  <div v-else-if="state === 'report' && courses.length" :key="course.title">
     <div>
       <div section>
         <span>祝贺你！你在</span>
@@ -313,6 +329,37 @@ async function query() {
           ><img :src="GithubMark" alt="Github Repo" w-6 m-r-2 />Star this on Github.</a
         >
       </div>
+    </div>
+  </div>
+  <div v-else-if="state === 'report' && courses.length === 0">
+    <div section>
+      <h1>出错了！</h1>
+      <p>似乎没有获取到任何课程数据。</p>
+      <p>有问题？<a href="https://github.com/djdjz7/pg-wrapped/issues/new/choose">报告问题</a>。</p>
+    </div>
+  </div>
+  <div v-else-if="state === 'error'">
+    <div section>
+      <h1>出错了！😨</h1>
+      <p>{{ errorMessage }}<br /></p>
+      <p>
+        头抬起，让我们重回正轨！<br />
+        请检查凭据，或稍后再试。
+      </p>
+      <button
+        @click="reload()"
+        m-t-2
+        w-fit
+        p-y-2
+        p-x-4
+        rounded-lg
+        ring="2 offset-2 transparent focus:gray"
+        transition-all
+        duration-150
+        border-none
+      >
+        刷新
+      </button>
     </div>
   </div>
 </template>

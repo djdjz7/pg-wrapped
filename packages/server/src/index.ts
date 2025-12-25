@@ -1,8 +1,13 @@
-import { Elysia, t } from "elysia";
+import { Elysia, InternalServerError, t } from "elysia";
 import { crawl } from "./crawler";
 import { analyzeAll } from "./analyzer";
 
 const app = new Elysia()
+  .onError(({ error, status }) => {
+    return status("I'm a teapot", {
+      message: error.toString(),
+    });
+  })
   .post(
     "/",
     async ({ body: { account, password, year } }) => {
@@ -22,3 +27,5 @@ const app = new Elysia()
 console.log(
   `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
+
+export type App = typeof app;

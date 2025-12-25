@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "dependencies": {
+    "elysia": "latest"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1"
   },

@@ -3,7 +3,10 @@ import * as cheerio from "cheerio";
 
 export async function crawl(account: string, password: string, year: number) {
   const client = createClient();
-  const loginResp = await client.post<{ success: boolean; token?: string }>(
+  const loginResp = (await client.post<
+    | { success: true; token: string }
+    | { success: false; errors: { code: string; msg: string } }
+  >(
     "https://iaaa.pku.edu.cn/iaaa/oauthlogin.do",
     {
       appid: "ProgrammingGrid",
@@ -15,25 +18,31 @@ export async function crawl(account: string, password: string, year: number) {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
-  );
+    }
+  )).data;
+  if (!loginResp.success) {
+    throw new Error("IAAA 登录失败：" + loginResp.errors.msg);
+  }
   const pgAuth = await client.get(
     "https://programming.pku.edu.cn/authcallback",
     {
       params: {
-        token: loginResp.data.token,
+        token: loginResp.token,
       },
-    },
+    }
   );
   const pgAuth2 = await client.get(
     "https://programming.pku.edu.cn/course/authcallback",
     {
       params: {
-        token: loginResp.data.token,
+        token: loginResp.token,
       },
-    },
+    }
   );
   const accountPageUrl = pgAuth2.headers.location;
+  if (!accountPageUrl) {
+    throw new Error("编程网格 SSO 登录失败：未能获取用户主页链接");
+  }
   const accountPage = await client.get(accountPageUrl);
   const accountPageHtml = accountPage.data;
   const $ = cheerio.load(accountPageHtml);
@@ -76,20 +85,20 @@ export async function crawl(account: string, password: string, year: number) {
         course,
         probsets: (
           await Promise.all(
-            probsets.map((probset) => crawlProbset(client, probset, account)),
+            probsets.map((probset) => crawlProbset(client, probset, account))
           )
         ).sort(
-          (a, b) => a.probset.openTime.valueOf() - b.probset.openTime.valueOf(),
+          (a, b) => a.probset.openTime.valueOf() - b.probset.openTime.valueOf()
         ),
       };
-    }),
+    })
   );
 }
 
 async function crawlProbset(
   client: RequestClient,
   probset: Probset,
-  account: string,
+  account: string
 ) {
   const probsetPage = await client.get(`/probset/${probset.id}/`);
   const probsetPageHtml = probsetPage.data;
@@ -122,7 +131,7 @@ async function crawlProbset(
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-    },
+    }
   );
 
   for (const result of queryResult.data.results) {
@@ -135,7 +144,7 @@ async function crawlProbset(
         problem.id,
         account,
         probset.title,
-        problem.title,
+        problem.title
       );
     }
   }
@@ -152,7 +161,7 @@ async function crawlHistory(
   problemId: string,
   account: string,
   probsetTitle: string,
-  problemTitle: string,
+  problemTitle: string
 ) {
   let page = 0;
   let history: SubmissionHistory[] = [];
@@ -165,7 +174,7 @@ async function crawlHistory(
           username: account,
           page,
         },
-      },
+      }
     );
     const historyHtml = historyResponse.data;
     const $ = cheerio.load(historyHtml);
@@ -182,7 +191,7 @@ async function crawlHistory(
             probsetTitle,
           };
         })
-        .get(),
+        .get()
     );
   }
   return history;
