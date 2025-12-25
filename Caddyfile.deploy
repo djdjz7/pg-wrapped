@@ -1,0 +1,11 @@
+https://pgw.illusion.blog {
+    root * ./client
+    handle_path /gen/* {
+        reverse_proxy localhost:3000
+    }
+    file_server
+
+    tls {
+        dns cloudflare {$CF_DNS_TOKEN}
+    }
+}

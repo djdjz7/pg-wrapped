@@ -4,5 +4,13 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "build:client": "cd packages/client && bunx vite build --emptyOutDir --outDir ../../dist/client/",
+    "build:server": "cd packages/server && bun build --compile --minify-whitespace --minify-syntax --target bun-linux-x64 --outfile ../../dist/server src/index.ts",
+    "build": "concurrently bun:build:client bun:build:server && cp Caddyfile.deploy dist/Caddyfile"
+  }
 }
