@@ -1,7 +1,7 @@
 import { createClient, RequestClient } from "./client";
 import * as cheerio from "cheerio";
 
-export async function crawl(account: string, password: string) {
+export async function crawl(account: string, password: string, year: number) {
   const client = createClient();
   const loginResp = await client.post<{ success: boolean; token?: string }>(
     "https://iaaa.pku.edu.cn/iaaa/oauthlogin.do",
@@ -37,14 +37,14 @@ export async function crawl(account: string, password: string) {
   const accountPage = await client.get(accountPageUrl);
   const accountPageHtml = accountPage.data;
   const $ = cheerio.load(accountPageHtml);
-  const courses = $("#coursesOfStudent.courses > div.open.rbox.click")
+  const courses = $(".courses > .rbox.click")
     .map((_, el) => {
       const course = $(el);
       // <span>计算概论A 2024 李戈<i></i>2024<i><i>李戈</span>
       const courseTitleSpan = course.children().first();
       const courseName = (courseTitleSpan.children()[0].prev as unknown as Text)
         .data;
-      if (courseName.includes("2024")) {
+      if (courseName.includes(year.toString())) {
         return {
           id: course.attr("id")!,
           title: courseName,

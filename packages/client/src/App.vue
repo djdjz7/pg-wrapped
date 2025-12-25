@@ -15,6 +15,15 @@ const course = computed(() => courses.value[index.value]);
 const account = ref('');
 const password = ref('');
 
+function getReportYear() {
+  const now = new Date();
+  const month = now.getMonth() + 1; // getMonth() returns 0-11
+  const year = now.getFullYear();
+  return month >= 11 ? year : year - 1;
+}
+
+const year = ref(getReportYear());
+
 async function query() {
   if (!account.value || !password.value) {
     return;
@@ -26,7 +35,7 @@ async function query() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ account: account.value, password: password.value }),
+      body: JSON.stringify({ account: account.value, password: password.value, year: year.value }),
     })
     const responseText = await response.text()
     courses.value = JSON.parse(responseText);
@@ -45,7 +54,7 @@ async function query() {
     <div section flex-justify-center>
       <span v-if="loading"
         class="absolute top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-xl">你先别急，先让我看...</span>
-      <h1 self-center m-0>编程网格 2024 年度总结</h1>
+      <h1 self-center m-0>编程网格 <input v-model.number="year" font-inherit font-size-inherit font-bold inline text-inherit w-4ch border-none focus:outline-none /> 年度总结</h1>
       <input m-t-4 v-model="account" placeholder="账号" w-full p-y-2 p-x-2 max-w-80 mx-auto rounded-lg
         ring="2 offset-2 transparent focus:gray hover:gray" outline-none border="1 solid gray" transition-all
         duration-150 @keypress.enter="query()" />
