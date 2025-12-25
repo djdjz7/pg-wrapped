@@ -6,7 +6,7 @@ import SubmissionCard from './components/SubmissionCard.vue'
 import { ChevronDownIcon } from '@heroicons/vue/24/outline'
 import { type Course } from './data'
 import GithubMark from './assets/github-mark.svg'
-import { type App } from '../../server/src/index'
+import type { App } from '../../server/src/index'
 import { treaty } from '@elysiajs/eden'
 
 const serverLocation = new URL('/gen/', window.location.href)
@@ -150,7 +150,7 @@ function reload() {
       你先别急，先让我看...
     </div>
   </div>
-  <div v-else-if="state === 'report' && courses.length" :key="course.title">
+  <div v-else-if="state === 'report' && courses.length && course" :key="course.title">
     <div>
       <div section>
         <span>祝贺你！你在</span>
@@ -335,7 +335,11 @@ function reload() {
     <div section>
       <h1>出错了！</h1>
       <p>似乎没有获取到任何课程数据。</p>
-      <p>有问题？<a href="https://github.com/djdjz7/pg-wrapped/issues/new/choose">报告问题</a>。</p>
+      <p>
+        有问题？<a color-blue href="https://github.com/djdjz7/pg-wrapped/issues/new/choose"
+          >报告问题</a
+        >。
+      </p>
     </div>
   </div>
   <div v-else-if="state === 'error'">
