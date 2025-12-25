@@ -1,4 +1,7 @@
-:root, select, input, button {
+:root,
+select,
+input,
+button {
   font-size: 16px;
   font-family:
     'Inter',
@@ -21,7 +24,7 @@
 
 ul {
   list-style-type: none;
-  padding: 0
+  padding: 0;
 }
 
 body {
@@ -33,5 +36,5 @@ body {
 
 select {
   border: none;
-  outline: none
+  outline: none;
 }

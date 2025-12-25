@@ -107,6 +107,6 @@ export interface Language {
 }
 
 export interface Statistics4 {
-  "C++": number
+  'C++': number
   Python: number
 }

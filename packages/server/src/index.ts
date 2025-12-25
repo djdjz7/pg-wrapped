@@ -6,7 +6,7 @@ const app = new Elysia()
   .post(
     "/",
     async ({ body: { account, password, year } }) => {
-      const crawlResult =  await crawl(account, password, year);
+      const crawlResult = await crawl(account, password, year);
       return analyzeAll(crawlResult);
     },
     {
@@ -20,5 +20,5 @@ const app = new Elysia()
   .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );

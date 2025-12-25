@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { dateToString } from '@/utils';
-import StatusBadge from '@/components/StatusBadge.vue';
+import { dateToString } from '@/utils'
+import StatusBadge from '@/components/StatusBadge.vue'
 defineProps<{
   submission: {
-    result: string;
-    time: string;
-    language: string;
-    problemTitle: string;
-    probsetTitle: string;
-  };
-}>();
+    result: string
+    time: string
+    language: string
+    problemTitle: string
+    probsetTitle: string
+  }
+}>()
 </script>
 
 <template>
