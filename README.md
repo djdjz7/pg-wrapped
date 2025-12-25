@@ -8,40 +8,32 @@ Tip: 登录页面的年份是可以改的
 
 ![preview](preview.png)
 
-## 自行部署
-
-### Prerequests:
+## Build Dependencies
 
 - Bun.js
-- Node
-- Caddy (or any other web server you like, without my config file)
+- Node.js
 
-### Build
-
-```sh
-cd client
-bun run build
-cd ../server
-bun build \
-	--compile \
-	--minify \
-	--target bun \
-	--outfile ../server-bundle \
-	./src/index.ts
-cd ..
-```
-
-### Run
+## Build
 
 ```sh
-./server-bundle
+bun install
+bun build
 ```
 
-and in another terminal window:
+Output at `./dist`
 
-```sh
-caddy run
-```
+Note: Server bundle target defaults to bun-linux-x64, modify `package.json` if needed.
+
+## Deploy Dependencies
+
+- Caddy
+
+## Deploy
+
+1. Copy output directory to target server
+2. Modify Caddyfile
+3. Start `./dist/server`
+4. Start Caddy
 
 ## Some notes
 
